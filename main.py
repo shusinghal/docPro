@@ -20,6 +20,7 @@ def before_request():
 def analyze_repo():
     if request.method == 'POST':
         file = request.files['file']
+        url = request.form['url']
 
         if file:
             filename = secure_filename(file.filename)
@@ -61,46 +62,44 @@ def analyze_repo():
                                 broken_links.append(url)
             
             return render_template('result.html', count=g.double_spaces_count, broken_links=g.broken_links)
-        if request.method == 'POST':
-                url = request.form['url']
-                if url:
-                    # Extract the repository name from the URL and use it as the directory name
-                    repo_name = url.rsplit('/', 1)[-1]
-                    if '.git' in repo_name:
-                        repo_name = repo_name[:-4]
-                    repo_dir = os.path.join('repos', repo_name)
+        if url:
+            # Extract the repository name from the URL and use it as the directory name
+            repo_name = url.rsplit('/', 1)[-1]
+            if '.git' in repo_name:
+                repo_name = repo_name[:-4]
+            repo_dir = os.path.join('repos', repo_name)
+            
+            # Only clone the repository if it hasn't been cloned already
+            if not os.path.exists(repo_dir):
+                git.Repo.clone_from(url, repo_dir)
+            
+            double_spaces_count = 0
+            broken_links = []
+            
+            # Walk through all the files in the repository
+            for foldername, subfolders, filenames in os.walk(repo_dir):
+                for filename in filenames:
+                    file_path = os.path.join(foldername, filename)
                     
-                    # Only clone the repository if it hasn't been cloned already
-                    if not os.path.exists(repo_dir):
-                        git.Repo.clone_from(url, repo_dir)
-                    
-                    double_spaces_count = 0
-                    broken_links = []
-                    
-                    # Walk through all the files in the repository
-                    for foldername, subfolders, filenames in os.walk(repo_dir):
-                        for filename in filenames:
-                            file_path = os.path.join(foldername, filename)
-                            
-                            # Only analyze text files
-                            if filename.endswith('.txt'):
-                                with open(file_path, 'r') as f:
-                                    content = f.read()
-                                
-                                lines = content.split('\n')
-                                double_spaces_count += sum(line.count('  ') for line in lines)
-                                print(f"double spaces count 2 is {double_spaces_count}")
-                                soup = BeautifulSoup(content, 'html.parser')
-                                for link in soup.find_all('a'):
-                                    url = link.get('href')
-                                    try:
-                                        response = requests.head(url, timeout=5)
-                                        if response.status_code != 200:
-                                            broken_links.append(url)
-                                    except (requests.ConnectionError, requests.Timeout, requests.TooManyRedirects):
-                                        broken_links.append(url)
-                    
-                    return render_template('result.html', double_spaces_count=double_spaces_count, broken_links=broken_links)
+                    # Only analyze text files
+                    if filename.endswith('.txt'):
+                        with open(file_path, 'r') as f:
+                            content = f.read()
+                        
+                        lines = content.split('\n')
+                        double_spaces_count += sum(line.count('  ') for line in lines)
+                        print(f"double spaces count 2 is {double_spaces_count}")
+                        soup = BeautifulSoup(content, 'html.parser')
+                        for link in soup.find_all('a'):
+                            url = link.get('href')
+                            try:
+                                response = requests.head(url, timeout=5)
+                                if response.status_code != 200:
+                                    broken_links.append(url)
+                            except (requests.ConnectionError, requests.Timeout, requests.TooManyRedirects):
+                                broken_links.append(url)
+            
+            return render_template('result.html', double_spaces_count=double_spaces_count, broken_links=broken_links)
     return render_template('upload.html')
 
 @app.route('/data', methods=['GET'])

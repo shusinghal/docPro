@@ -10,12 +10,18 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Results Dashboard</h1>
-        {% for filename, double_spaces, broken_links, broken_links_count in results %}
+        {% for filename, double_spaces, broken_links, broken_links_count, ari, RL in results %}
         <div class="card mb-4">
             <div class="card-header">
                 <h2>{{ filename }}</h2>
             </div>
             <div class="card-body">
+                <h5 class="card-title">Automated Readability Index (ARI): {{% if ari == "Not enough data to calculate ARI" %}
+                    {{ ari }}
+                {% else %}
+                    {{ ari }}
+                {% endif %}}</h5>
+                <h5 class="card-title">Readability level: {{ RL }}</h5>
                 <h5 class="card-title">Double spaces: {{ double_spaces }}</h5>
                 <h5 class="card-title">Broken links: {{ broken_links_count }}</h5>
                 {% for link in broken_links %}
