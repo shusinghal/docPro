@@ -1,0 +1,14 @@
+exchSeg  d
+index  Name
+exchTimeStamp
+settlementType
+closeValue
+openValue
+highValue
+lowValue
+ltpValue
+yearlyHigh
+yearlyLow
+lowTrdExeRange
+highTrdExeRange <a href = "https://ww.googl.c">
+<a href = "https://ww.yah.c">

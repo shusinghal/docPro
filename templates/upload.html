@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        }
+        input[type=text], input[type=file] {
+            margin-bottom: 10px;
+        }
+        input[type=submit] {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type=submit]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    
+    <form method="post" enctype="multipart/form-data">
+        <p>Choose your files source:</p>
+        <input type="text" name="url" placeholder="Enter webpage or repo URL">
+        <br>
+        <input type="file" name="file" multiple>
+        <br>
+        <input type="submit" value="Analyze">
+    </form>
+</body>
+</html>
