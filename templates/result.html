@@ -16,11 +16,9 @@
                 <h2>{{ filename }}</h2>
             </div>
             <div class="card-body">
-                <h5 class="card-title">Automated Readability Index (ARI): {{% if ari == "Not enough data to calculate ARI" %}
+                <h5 class="card-title">Automated Readability Index (ARI): 
                     {{ ari }}
-                {% else %}
-                    {{ ari }}
-                {% endif %}}</h5>
+                </h5>
                 <h5 class="card-title">Readability level: {{ RL }}</h5>
                 <h5 class="card-title">Double spaces: {{ double_spaces }}</h5>
                 <h5 class="card-title">Broken links: {{ broken_links_count }}</h5>
